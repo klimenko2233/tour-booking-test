@@ -10,6 +10,8 @@ export type Hotel = {
   countryName: string;
 };
 
+export type HotelsMap = Record<string, Hotel>;
+
 export type GeoEntity =
   | (Country & { type: 'country' })
   | (City & { type: 'city' })

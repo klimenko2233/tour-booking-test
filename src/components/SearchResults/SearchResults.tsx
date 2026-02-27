@@ -1,16 +1,21 @@
+import type { CountriesMap } from '../../types/api';
+import type { TourWithHotel } from '../../store/slices/tourSearchSelectors';
 import type { SearchStatus } from '../../store/slices/tourSearchSlice';
+import { TourCard } from '../TourCard/TourCard';
 import './SearchResults.css';
 
 type SearchResultsProps = {
   status: SearchStatus;
-  prices: Record<string, unknown>;
+  tours: TourWithHotel[];
+  countriesMap: CountriesMap | null;
   error: string | null;
   onRetry?: () => void;
 };
 
 export function SearchResults({
   status,
-  prices,
+  tours,
+  countriesMap,
   error,
   onRetry,
 }: SearchResultsProps) {
@@ -46,10 +51,19 @@ export function SearchResults({
     );
   }
 
-  const count = Object.keys(prices).length;
   return (
     <div className="search-results search-results_success">
-      <p className="search-results__text">Знайдено турів: {count}</p>
+      <p className="search-results__count">Знайдено турів: {tours.length}</p>
+      <div className="search-results__grid" role="list">
+        {tours.map((tour) => (
+          <div key={tour.offer.id} role="listitem">
+            <TourCard
+              tour={tour}
+              countryFlag={tour.hotel && countriesMap ? countriesMap[tour.hotel.countryId]?.flag : undefined}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

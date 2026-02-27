@@ -57,16 +57,14 @@ export function DirectionCombobox({
   const [options, setOptions] = useState<GeoEntity[]>([]);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const focusAfterSelectRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadOptions = useCallback(async (query: string, selectedType?: GeoEntity['type']) => {
     setLoading(true);
     try {
-      if (!query.trim()) {
-        const map = await fetchCountries();
-        const list: GeoEntity[] = Object.values(map).map((c) => ({ ...c, type: 'country' }));
-        setOptions(list);
-      } else if (selectedType === 'country') {
+      if (!query.trim() || selectedType === 'country') {
         const map = await fetchCountries();
         const list: GeoEntity[] = Object.values(map).map((c) => ({ ...c, type: 'country' }));
         setOptions(list);
@@ -110,6 +108,10 @@ export function DirectionCombobox({
   }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps -- load once when opening with current value/inputValue
 
   const handleInputFocus = () => {
+    if (focusAfterSelectRef.current) {
+      focusAfterSelectRef.current = false;
+      return;
+    }
     setIsOpen(true);
   };
 
@@ -135,6 +137,8 @@ export function DirectionCombobox({
     onSelect(entity);
     onInputChange(entity.name);
     setIsOpen(false);
+    focusAfterSelectRef.current = true;
+    inputRef.current?.focus();
   };
 
   const handleClear = () => {
@@ -148,6 +152,7 @@ export function DirectionCombobox({
     <div className="direction-combobox" ref={containerRef}>
       <div className="direction-combobox__input-wrap">
         <input
+          ref={inputRef}
           type="text"
           className="direction-combobox__input"
           value={inputValue}

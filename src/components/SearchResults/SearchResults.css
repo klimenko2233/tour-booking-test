@@ -53,3 +53,22 @@
 .search-results__retry:hover {
   background: #eff6ff;
 }
+
+.search-results_success {
+  text-align: left;
+  width: 100%;
+}
+
+.search-results__count {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.search-results__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
