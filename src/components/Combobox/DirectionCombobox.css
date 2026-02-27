@@ -1,0 +1,124 @@
+.direction-combobox {
+  position: relative;
+  width: 100%;
+}
+
+.direction-combobox__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.direction-combobox__input-wrap:focus-within {
+  outline: 2px solid #2563eb;
+  outline-offset: 0;
+  border-color: #2563eb;
+}
+
+.direction-combobox__input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 10px 36px 10px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: transparent;
+}
+
+.direction-combobox__input::placeholder {
+  color: #9ca3af;
+}
+
+.direction-combobox__input:focus {
+  outline: none;
+}
+
+.direction-combobox__clear {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.direction-combobox__clear:hover {
+  color: #111;
+  background: #f3f4f6;
+}
+
+.direction-combobox__dropdown {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.direction-combobox__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.direction-combobox__option:hover,
+.direction-combobox__option:focus-visible {
+  background: #f3f4f6;
+}
+
+.direction-combobox__option-flag {
+  flex-shrink: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.direction-combobox__option-flag img {
+  display: block;
+  vertical-align: middle;
+}
+
+.direction-combobox__option-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #4b5563;
+}
+
+.direction-combobox__loading,
+.direction-combobox__empty {
+  padding: 12px;
+  color: #6b7280;
+  font-size: 0.9375rem;
+}
