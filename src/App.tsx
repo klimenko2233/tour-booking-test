@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import './App.css';
+
 import { SearchForm } from './components/SearchForm/SearchForm';
 import { SearchResults } from './components/SearchResults/SearchResults';
 import { startSearch } from './store/slices/tourSearchSlice';
 import { selectToursWithHotels } from './store/slices/tourSearchSelectors';
 import { fetchCountries } from './services/tourApi';
 import { deriveCountryId } from './utils/direction';
-import type { CountriesMap, GeoEntity } from './types/api';
+
 import type { AppDispatch, RootState } from './store';
+import type { CountriesMap, GeoEntity } from './types/api';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,7 +36,11 @@ function App() {
   return (
     <div className="app">
       <div className="app__content">
-        <SearchForm onSubmit={handleSearchSubmit} />
+        <SearchForm
+          onSubmit={handleSearchSubmit}
+          searchStatus={status}
+          lastCountryId={lastCountryId}
+        />
         <SearchResults
           status={status}
           tours={tours}

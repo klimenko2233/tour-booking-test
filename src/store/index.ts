@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import { tourSearchSlice } from './slices/tourSearchSlice';
 
 export const store = configureStore({

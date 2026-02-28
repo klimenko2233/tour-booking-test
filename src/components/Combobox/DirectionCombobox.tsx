@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 
-import type { GeoEntity, Country } from '../../types/api';
-import { fetchCountries, fetchSearchGeo } from '../../services/tourApi';
-
 import './DirectionCombobox.css';
+
+import { fetchCountries, fetchSearchGeo } from '../../services/tourApi';
+import type { GeoEntity, Country } from '../../types/api';
 
 const DEBOUNCE_MS = 200;
 

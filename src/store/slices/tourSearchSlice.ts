@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+
+import { startSearchPrices, getSearchPrices, fetchHotels, stopSearchPrices } from '../../services/tourApi';
 import type { PricesMap, HotelsMap } from '../../types/api';
-import { startSearchPrices, getSearchPrices, fetchHotels } from '../../services/tourApi';
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
@@ -83,6 +84,9 @@ export const tourSearchSlice = createSlice({
     ) => {
       state.hotelsByCountryId[action.payload.countryId] = action.payload.hotels;
     },
+    clearActiveToken: (state) => {
+      state.activeToken = null;
+    },
   },
 });
 
@@ -93,10 +97,20 @@ export const {
   searchEmpty,
   searchError,
   setHotelsForCountry,
+  clearActiveToken,
 } = tourSearchSlice.actions;
 
+type TourSearchAction =
+  | ReturnType<typeof searchStarted>
+  | ReturnType<typeof searchPolling>
+  | ReturnType<typeof searchSuccess>
+  | ReturnType<typeof searchEmpty>
+  | ReturnType<typeof searchError>
+  | ReturnType<typeof setHotelsForCountry>
+  | ReturnType<typeof clearActiveToken>;
+
 type ThunkArg = {
-  dispatch: (action: ReturnType<typeof searchStarted> | ReturnType<typeof searchPolling> | ReturnType<typeof searchSuccess> | ReturnType<typeof searchEmpty> | ReturnType<typeof searchError> | ReturnType<typeof setHotelsForCountry>) => void;
+  dispatch: (action: TourSearchAction) => void;
   getState: () => { tourSearch: TourSearchState };
 };
 
@@ -115,9 +129,26 @@ async function ensureHotelsLoaded(
   }
 }
 
+function isSearchStillCurrent(
+  getState: ThunkArg['getState'],
+  countryId: string,
+  token: string | null
+): boolean {
+  const { lastCountryId, activeToken } = getState().tourSearch;
+  if (token !== null) return activeToken === token;
+  return lastCountryId === countryId;
+}
+
 export function startSearch(countryId: string) {
   return async (dispatch: ThunkArg['dispatch'], getState: ThunkArg['getState']) => {
-    const { cache } = getState().tourSearch;
+    const { cache, activeToken: prevToken } = getState().tourSearch;
+    if (prevToken) {
+      try {
+        await stopSearchPrices(prevToken);
+      } catch { /* ignore */ }
+      dispatch(clearActiveToken());
+    }
+
     const cached = cache[countryId];
     if (cached && Object.keys(cached).length > 0) {
       dispatch(searchSuccess({ countryId, prices: cached }));
@@ -128,6 +159,7 @@ export function startSearch(countryId: string) {
     dispatch(searchStarted(countryId));
 
     const startResult = await startSearchPrices(countryId);
+    if (!isSearchStillCurrent(getState, countryId, null)) return;
     if (!startResult.ok) {
       dispatch(searchError(startResult.message));
       return;
@@ -142,8 +174,10 @@ export function startSearch(countryId: string) {
     for (;;) {
       const delay = Math.max(0, new Date(currentWaitUntil).getTime() - Date.now());
       await sleep(delay);
+      if (!isSearchStillCurrent(getState, countryId, token)) return;
 
       const result = await getSearchPrices(token);
+      if (!isSearchStillCurrent(getState, countryId, token)) return;
 
       if (result.ok) {
         const prices = result.prices;

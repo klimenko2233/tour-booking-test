@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-import { DirectionCombobox } from '../Combobox/DirectionCombobox';
-
-import type { GeoEntity } from '../../types/api';
-
 import './SearchForm.css';
+
+import { DirectionCombobox } from '../Combobox/DirectionCombobox';
+import { deriveCountryId } from '../../utils/direction';
+import type { SearchStatus } from '../../store/slices/tourSearchSlice';
+import type { GeoEntity } from '../../types/api';
 
 export type SearchFormSubmitPayload = {
   direction: GeoEntity | null;
@@ -12,9 +13,11 @@ export type SearchFormSubmitPayload = {
 
 type SearchFormProps = {
   onSubmit?: (payload: SearchFormSubmitPayload) => void;
+  searchStatus?: SearchStatus;
+  lastCountryId?: string | null;
 };
 
-export function SearchForm({ onSubmit }: SearchFormProps) {
+export function SearchForm({ onSubmit, searchStatus, lastCountryId }: SearchFormProps) {
   const [selectedDirection, setSelectedDirection] = useState<GeoEntity | null>(null);
   const [inputValue, setInputValue] = useState('');
 
@@ -22,6 +25,10 @@ export function SearchForm({ onSubmit }: SearchFormProps) {
     e.preventDefault();
     onSubmit?.({ direction: selectedDirection });
   };
+
+  const isSearching = searchStatus === 'loading' || searchStatus === 'polling';
+  const currentCountryId = deriveCountryId(selectedDirection);
+  const submitDisabled = isSearching && currentCountryId === lastCountryId;
 
   return (
     <form className="search-form" onSubmit={handleSubmit}>
@@ -35,7 +42,7 @@ export function SearchForm({ onSubmit }: SearchFormProps) {
           placeholder="Введіть країну, місто або готель"
         />
       </div>
-      <button type="submit" className="search-form__submit">
+      <button type="submit" className="search-form__submit" disabled={submitDisabled}>
         Знайти
       </button>
     </form>

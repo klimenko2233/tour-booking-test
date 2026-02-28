@@ -1,3 +1,11 @@
+import {
+  getCountries as getCountriesFetch,
+  searchGeo as searchGeoFetch,
+  startSearchPrices as startSearchPricesFetch,
+  getSearchPrices as getSearchPricesFetch,
+  getHotels as getHotelsFetch,
+  stopSearchPrices as stopSearchPricesFetch,
+} from '../api-provided/api.js';
 import type {
   CountriesMap,
   GeoResponse,
@@ -7,13 +15,6 @@ import type {
   GetSearchPricesResponse,
   ErrorResponse,
 } from '../types/api';
-import {
-  getCountries as getCountriesFetch,
-  searchGeo as searchGeoFetch,
-  startSearchPrices as startSearchPricesFetch,
-  getSearchPrices as getSearchPricesFetch,
-  getHotels as getHotelsFetch,
-} from '../api-provided/api.js';
 
 export async function fetchCountries(): Promise<CountriesMap> {
   const response = await getCountriesFetch();
@@ -76,4 +77,8 @@ export async function fetchHotels(countryId: string): Promise<HotelsMap> {
   const response = await getHotelsFetch(countryId);
   if (!response.ok) throw new Error('Failed to fetch hotels');
   return response.json();
+}
+
+export function stopSearchPrices(token: string): Promise<Response> {
+  return stopSearchPricesFetch(token);
 }

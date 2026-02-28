@@ -1,8 +1,9 @@
-import type { CountriesMap } from '../../types/api';
-import type { TourWithHotel } from '../../store/slices/tourSearchSelectors';
-import type { SearchStatus } from '../../store/slices/tourSearchSlice';
-import { TourCard } from '../TourCard/TourCard';
 import './SearchResults.css';
+
+import { TourCard } from '../TourCard/TourCard';
+import type { SearchStatus } from '../../store/slices/tourSearchSlice';
+import type { TourWithHotel } from '../../store/slices/tourSearchSelectors';
+import type { CountriesMap } from '../../types/api';
 
 type SearchResultsProps = {
   status: SearchStatus;

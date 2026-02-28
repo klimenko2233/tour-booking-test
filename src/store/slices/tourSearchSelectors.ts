@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
+
 import type { RootState } from '../index';
 import type { PriceOffer, Hotel } from '../../types/api';
 

@@ -1,5 +1,6 @@
-import type { TourWithHotel } from '../../store/slices/tourSearchSelectors';
 import './TourCard.css';
+
+import type { TourWithHotel } from '../../store/slices/tourSearchSelectors';
 
 type TourCardProps = {
   tour: TourWithHotel;
